@@ -24,7 +24,7 @@ void print (int N, int *a)
 //пузырькова сортировка массива
 void bubbleSort()
 {
-    int a[ARRSIZE] = {2,3,7,13,8,9,45,6,103,32,1,24,8,4,10};          // Создаём массив
+    int a[ARRSIZE] = {2,3,7,13,8,9,45,6,103,32,1,24,8,4,10};
     puts("Array before bubble sort");
     print(ARRSIZE, a);
     
@@ -51,7 +51,7 @@ void bubbleSort()
 //улучшенная пузырьковая сортировка
 void bubbleSortUpgrade()
 {
-    int b[ARRSIZE] = {2,3,7,13,8,9,45,6,103,32,1,24,8,4,10};          // Создаём массив
+    int b[ARRSIZE] = {2,3,7,13,8,9,45,6,103,32,1,24,8,4,10};
     puts("Array before upgrated bubble sort");
     print(ARRSIZE, b);
 
@@ -81,16 +81,53 @@ void bubbleSortUpgrade()
     printf("Count of operations  %i\n",count);
 }
 
-
-
-
-
+//шейкерная сортировка
 
 void shakerSorting()
 {
-   
-}
+    int с[ARRSIZE] = {2,3,7,13,8,9,45,6,103,32,1,24,8,4,10};
+    puts("Array before shaker sort");
+    print(ARRSIZE, с);
+    
+    int left = 0;
+    int right =  ARRSIZE - 1;
+    int count = 0;
+    bool flag = true;
+    
+    while (flag && (left < right))
+    {
 
+        flag = false;
+        //пробежались по массиву слева направо
+        for(int i = left ; i < right; i++ )
+        {
+            count++;
+            if (с[i] > с[i + 1])
+            {
+                swap(&с[i], &с[i + 1]);
+                flag = true;
+            }
+        }
+        //убрали из сортировки справа 1 элемент так как он уже отсортирован
+        right--;
+        
+        //пробежались по массиву справа налево
+        for(int i = right; i > left ;i--)
+        {
+            count++;
+            if (с[i] < с[i - 1])
+            {
+                swap(&с[i], &с[i - 1]);
+                flag = true;
+            }
+        }
+        //убрали из сортировки 1 элемент слева так как он уже отсортирован
+        left++;
+    }
+    puts("Array after shaker sort");
+    print(ARRSIZE, с);
+    printf("Count of operations  %i\n",count);
+}
 
 int main(int argc, const char * argv[]) {
 
@@ -100,7 +137,10 @@ int main(int argc, const char * argv[]) {
 //    количество операций.
     
     bubbleSort();
+    puts("===================================================");
     bubbleSortUpgrade();
+    puts("===================================================");
+    shakerSorting();
     
 //  Задание 2
 // *Реализовать шейкерную сортировку.
