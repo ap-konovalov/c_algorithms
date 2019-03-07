@@ -127,6 +127,35 @@ void shakerSorting()
     puts("Array after shaker sort");
     print(ARRSIZE, с);
     printf("Count of operations  %i\n",count);
+    
+}
+
+//функция находит занечения индекса числа value в массиве sortedArray длинной arrLenght или возвращает -1 если числа value в массиве нет
+int binarySearch(int value,int *sortedArray,int arrLenght)
+{
+    int left = 0;
+    int right = arrLenght;
+    int middle = left + (right-left)/2;
+    
+    while(left <= right && sortedArray[middle] != value )
+    {
+        if(sortedArray[middle] < value)
+        {
+            left = middle + 1;
+        }
+        else
+        {
+            right = middle - 1;
+        }
+        middle = left + (right-left)/2;
+    }
+    if (sortedArray[middle] == value)
+    {
+        return middle;
+    }
+    else
+        return -1;
+  
 }
 
 int main(int argc, const char * argv[]) {
@@ -139,12 +168,18 @@ int main(int argc, const char * argv[]) {
     bubbleSort();
     puts("===================================================");
     bubbleSortUpgrade();
+
+//  Задание 2
+// *Реализовать шейкерную сортировку.
     puts("===================================================");
     shakerSorting();
     
-//  Задание 2
-// *Реализовать шейкерную сортировку.
-    
+//  Задание 3
+//     Реализовать бинарный алгоритм поиска в виде функции, которой передаётся
+//    отсортированный массив. Функция возвращает индекс найденного элемента или –1, если элемент не найден.
+    puts("===================================================");
+    int sortedArray[ARRSIZE] = {1,2,3,4,6,7,8,8,9,10,13,24,32,45,103};
+    printf("%i\n",binarySearch(7,sortedArray,ARRSIZE));
     return 0;
 
 }
