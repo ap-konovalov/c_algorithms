@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #define Bracket char
 #define STRSIZE 6
+#define TurnSize 10
 
 struct TNode
 {
@@ -89,6 +90,28 @@ void PairCheck(char firstPairSymb,char secondPairSym)
     }
 }
 
+// Добавляем в массив-очереь "arr" элемент value на позицию rear потом двигаем rear на 1 чтобы добавлять следующий элемент
+void turnAdd(char *arr, int *rear, char value)
+{
+    if (*rear > TurnSize - 1)
+    {
+        *rear = *rear % TurnSize;
+    }
+    arr[*rear] = value;
+    *rear = *rear + 1;
+}
+
+// Извлекаем из массива-очереди "arr"  элемент с индексом front-1 и увеличиваем значение front чтобы извлечь следующий элемент
+char turnExtract(char *arr, int *front)
+{
+    if (*front > TurnSize - 1)
+    {
+        *front = *front % TurnSize;
+    }
+    *front = *front + 1;
+    return  arr[*front - 1];
+};
+
 
 int main(int argc, const char * argv[]) {
 
@@ -102,7 +125,7 @@ int main(int argc, const char * argv[]) {
     Stack.maxSize = 100;
     Stack.head = NULL;
 // зададим массив со скробочной последовательностью
-    char bracketString[STRSIZE] = {'(','(','{','(',')','}'};
+    char bracketString[STRSIZE] = {'(','(','+','2',')',')'};
     int i;
     //пройдемся по массиву и проверим все скобки на наличие пары
     for (i=0; i < STRSIZE; i++)
@@ -143,5 +166,40 @@ int main(int argc, const char * argv[]) {
     }
     PrintStack();
     
+//    Задание 6
+//    Реализовать очередь:
+//    1. С использованием массива.
+//    2. *С использованием односвязного списка.
+    
+    char turn[TurnSize];
+    //в frontIndex храним индекс элемента который будем излекать в rearIndex индекс элемента который бодавим в массив
+    int frontIndex = 0;
+    int rearIndex = 0;
+    // создаем указатели чтобы передать значения переменных в функции для работы с очередью
+    char *arr = turn;
+    int *rIndex = &rearIndex;
+    int *fIndex = &frontIndex;
+    // добавляем элементы в массив
+    turnAdd(arr, rIndex, '0');
+    turnAdd(arr, rIndex, '2');
+    turnAdd(arr, rIndex, '3');
+    turnAdd(arr, rIndex, '4');
+    turnAdd(arr, rIndex, '5');
+    turnAdd(arr, rIndex, '6');
+    turnAdd(arr, rIndex, '7');
+    turnAdd(arr, rIndex, '8');
+    turnAdd(arr, rIndex, '9');
+    turnAdd(arr, rIndex, 'a');
+    // распечатаем нашу очередь
+    printf("Turn:\n");
+    for (int i=0; i < TurnSize; i++) {
+        printf("%c ",turn[i]);
+    }
+    printf("\n");
+    
+    // извлечем элемент из очереди и распечатаем его значение
+    printf("Extracted value = %c\n",turnExtract(arr, fIndex));
+    printf("Extracted value = %c\n",turnExtract(arr, fIndex));
+         
     return 0;
 }
