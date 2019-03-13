@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define Bracket char
+#define STRSIZE 6
 
 struct TNode
 {
@@ -66,6 +67,28 @@ void PrintStack()
     }
 }
 
+// сравниваем пару символов: firstPairSymb - открывающая скобка к нему ищем закрывающую secondPairSym
+void PairCheck(char firstPairSymb,char secondPairSym)
+{
+    //если в стэке пусто пары к закрывающей скобке не будет, можно завершать программу
+    if( Stack.size == 0)
+    {
+        // Выведем сообщение о лишнем символе
+        printf("Wrong sequence. First extra symbol is: \"%c\"\n", secondPairSym);
+        _Exit (EXIT_SUCCESS);
+    }
+    //если в стэке сверху лежит открывающая скобка-пара к нашей закрывающей, то уберем ее из стека
+    else if(Stack.head->value == firstPairSymb)
+    {
+        pop();
+    }
+    // если пара не нашлась положим символ в стэк и ищем пары дальше
+    else
+    {
+        push(secondPairSym);
+    }
+}
+
 
 int main(int argc, const char * argv[]) {
 
@@ -75,22 +98,50 @@ int main(int argc, const char * argv[]) {
 //    выражений – (), ([])(), {}(), ([{}]),
 //    неправильных – )(, ())({), (, ])}), ([(]), для скобок – [, (, {.
 //    Например: (2+(2*2)) или [2/{5*(4+7)}]
+    
     Stack.maxSize = 100;
     Stack.head = NULL;
-    push('(');
-    push('(');
-    
-    //TODO: Считываем символ из строки если это открвающая скобка - кладем в стек. Если закрывающая страниваем с тем что лежит в стэке если там открывающая пара - делаем поп если нет 
-    char symb = ')';
-    if(Stack.head->value == '(' && symb == ')')
+// зададим массив со скробочной последовательностью
+    char bracketString[STRSIZE] = {'(','(','{','(',')','}'};
+    int i;
+    //пройдемся по массиву и проверим все скобки на наличие пары
+    for (i=0; i < STRSIZE; i++)
     {
-        pop();
+        char symb = bracketString[i];
+        switch (symb) {
+                //открывающие скобки положим в стэк
+            case '(':
+                push(symb);
+                break;
+                //закрывающую скобку будем проверять на наличие пары и на ее позицию. Если она единственная первая в стэке, то пары для нее мы не найдем, программу можно завершать
+            case ')':
+                PairCheck('(', symb);
+                break;
+            case '[':
+                push(symb);
+                break;
+            case ']':
+                PairCheck('[', symb);
+                break;
+            case '{':
+                push(symb);
+                break;
+            case '}':
+                PairCheck('{', symb);
+                break;
+            default:
+                break;
+        }
     }
-  
-    printf("%c\n",Stack.head->value);
- //   push('b');
-
-  //  PrintStack();
+    if(Stack.size == 0)
+    {
+         printf("The sequence is correct\n");
+    }
+    else
+    {
+        printf("The sequence is not correct\n");
+    }
+    PrintStack();
     
     return 0;
 }
