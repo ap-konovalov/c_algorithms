@@ -5,6 +5,7 @@
 #include <malloc/malloc.h>
 #include <stdlib.h>
 #define STRINGSIZE 3
+#define FILEADRESSSIZE 50
 
 //хеш-функция Дженкинса. Вычисляет хэш-функцию из строки str передаваемой в виде указателя на массив символов
 int hash(char *str)
@@ -37,36 +38,31 @@ typedef struct Node
 } Node;
 
 //распечатка двоичного дерева в виде скобочной записи
-void printTree(Node *root)
-{
+void printTree(Node *root) {
     if (root)
     {
-        printf("%d" , root -> data);
-        if (root -> left || root -> right)
+        printf("%d", root->data);
+        if (root->left || root->right)
         {
             printf("(");
-                if(root -> left)
-                {
-                    printTree(root -> left);
-                }
-                else
-                {
-                    printf("NULL");
-                }
-                printf(",");
             
-                if (root -> right)
-                {
-                    printTree(root -> right);
-                }
-                else
-                {
-                    printf("NULL");
-                    printf(")");
-                }
+            if (root->left)
+                printTree(root->left);
+            else
+                printf("NULL");
+            
+            printf(",");
+            
+            if (root->right)
+                printTree(root->right);
+            else
+                printf("NULL");
+            
+            printf(")");
         }
     }
- };
+}
+
 
 // Создание нового узла
 Node* getFreeNode(T value, Node *parent)
@@ -143,10 +139,58 @@ void preOrderTravers(Node* root)
 {
     if (root)
     {
-        printf("%d", root -> data);
+        printf("%d ", root -> data);
         preOrderTravers(root -> left);
         preOrderTravers(root -> right);
     }
+}
+
+// Симметричный обход дерева. Левое поддерево-корень-правое поддерево
+void inOrderTravers(Node* root)
+{
+    if (root)
+    {
+        inOrderTravers(root -> left);
+        printf("%d ", root -> data);
+        inOrderTravers(root -> right);
+    }
+}
+
+// Обход дерева в обратном порядке. Левое поддерево - правое поддеревао - корень
+void postOrderTravers(Node* root)
+{
+    {
+        if (root)
+        {
+            postOrderTravers(root -> left);
+            postOrderTravers(root -> right);
+            printf("%d ", root -> data);
+        }
+    }
+}
+
+Node *searchValue(Node *root, T value)
+{
+    while (root)
+    {
+        // если в текущем узле значение больше чем искомое число, то идем искать в левое поддерево
+        if ( root -> data > value )
+        {
+            root = root -> left;
+            continue;
+        }
+        // если в текущем узле значение меньше чем искомое число, то идем искать в правое поддерево
+        else if ( root -> data < value)
+        {
+            root = root -> right;
+            continue;
+        }
+        else
+        {
+            return root;
+        }
+    }
+    return NULL;
 }
 
 int main(int argc, const char * argv[]) {
@@ -167,7 +211,10 @@ int main(int argc, const char * argv[]) {
 //    которой можно указывать, из какого файла считывать данные, каким образом обходить дерево.
 
     Node *Tree = NULL;
-    FILE* file = fopen("data.txt", "r");
+    char address[FILEADRESSSIZE];
+    printf("Inpun file name (for example: data.txt)\n");
+    scanf("%s", address);
+    FILE* file = fopen(address, "r");
     if (file == NULL)
     {
         puts("Can't open file");
@@ -185,8 +232,35 @@ int main(int argc, const char * argv[]) {
     }
     fclose(file);
     printTree(Tree);
-    printf("\nPreOrderTravers:");
-    preOrderTravers(Tree);
-     printf("\n");
+    printf("\n");
+    // Обход дерева различными способами;
+    int orderTravers;
+    printf("Enter tree traversal\n1.PreOrderTravers\n2.InOrderTravers\n3.PostOrderTravers\n");
+    scanf("%i", &orderTravers);
+    switch (orderTravers) {
+        case 1:
+            printf("\nPreOrderTravers:");
+            preOrderTravers(Tree);
+            break;
+        case 2:
+            printf("\nInOrderTravers:");
+            inOrderTravers(Tree);
+            break;
+        case 3:
+            printf("\nPostOrderTravers:");
+            postOrderTravers(Tree);
+            break;
+        default:
+            printf("\nThere is no method %i" , orderTravers);
+            break;
+    }
+    //Поиск элемента в дереве
+    int element = 9;                // элемент который будем искать
+    // если элемеент присутствует сообщим об этом
+    if (searchValue(Tree, element))
+    printf("\nElement %d is in tree \n", searchValue(Tree, element) -> data);
+    // Если элемента нет, выведем сообщение что его нет
+    else
+    printf("Element not found in tree \n");
     return 0;
 }
